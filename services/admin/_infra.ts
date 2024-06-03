@@ -8,7 +8,7 @@ import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { join } from 'path'
 
-import { createApi } from '../core/infra'
+import { createApi } from '../core/_infra'
 
 interface AdminProps extends cdk.StackProps {
   domainName: string

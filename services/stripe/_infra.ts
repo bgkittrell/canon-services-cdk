@@ -10,7 +10,7 @@ import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { join } from 'path'
 
-import { createApi, createQueueConsumer } from '../core/infra'
+import { createApi, createQueueConsumer } from '../core/_infra'
 
 interface StripeProps extends cdk.StackProps {
   eventBusName: string

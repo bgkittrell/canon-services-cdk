@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import 'source-map-support/register'
 import * as cdk from 'aws-cdk-lib'
-import { BusStack } from '../services/bus/infra'
-import { FilesStack } from '../services/files/infra'
-import { AssistantStack } from '../services/assistant/infra'
-import { AdminStack } from '../services/admin/infra'
-import { ProfilesStack } from '../services/profiles/infra'
-import { StripeStack } from '../services/stripe/infra'
-import { PodcastsStack } from '../services/podcasts/infra'
+import { BusStack } from '../services/bus/_infra'
+import { FilesStack } from '../services/files/_infra'
+import { AssistantStack } from '../services/assistant/_infra'
+import { AdminStack } from '../services/admin/_infra'
+import { ProfilesStack } from '../services/profiles/_infra'
+import { StripeStack } from '../services/stripe/_infra'
+import { PodcastsStack } from '../services/podcasts/_infra'
 
 const app = new cdk.App()
 const environment = app.node.tryGetContext('env') || 'dev'

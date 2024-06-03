@@ -9,7 +9,7 @@ import * as iam from 'aws-cdk-lib/aws-iam'
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { join } from 'path'
-import { createApi, addResourcefulRoutes, createQueueConsumer } from '../core/infra'
+import { createApi, addResourcefulRoutes, createQueueConsumer } from '../core/_infra'
 
 interface PodcastsProps extends cdk.StackProps {
   eventBusName: string
@@ -65,7 +65,7 @@ export class PodcastsStack extends cdk.Stack {
       })
     )
 
-    // Files API Gateway
+    // Feeds API Gateway
     const { api, authorizer } = createApi(
       this,
       props.zoneName,
