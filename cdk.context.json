@@ -1,0 +1,14 @@
+{
+  "hosted-zone:account=905418195961:domainName=assets.cdk.canonical.media:region=us-east-1": {
+    "Id": "/hostedzone/Z0739583A6RH6K2FUKQE",
+    "Name": "assets.cdk.canonical.media."
+  },
+  "hosted-zone:account=905418195961:domainName=files.api.cdk.canonical.media:region=us-east-1": {
+    "Id": "/hostedzone/Z07395822MDEEZ6G4J0FN",
+    "Name": "files.api.cdk.canonical.media."
+  },
+  "hosted-zone:account=905418195961:domainName=canonical.media:region=us-east-1": {
+    "Id": "/hostedzone/Z10468411MV7FJL2T1HZU",
+    "Name": "canonical.media."
+  }
+}
