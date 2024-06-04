@@ -2,6 +2,8 @@ import OpenAI from 'openai'
 import * as fs from 'fs'
 import fetch from 'node-fetch'
 const openai = new OpenAI()
+import { functions } from './tools'
+import { create } from 'domain'
 
 const downloadFile = (url: string) => {
   console.log('Downloading file:', url)
@@ -50,12 +52,13 @@ export const deleteVectorStoreFile = async (vectorStoreId: string, vectorStoreFi
 }
 
 export const createAssistant = async () => {
+  let instructions = getInstructions()
+  console.log('Creating assistant with instructions:', instructions)
   const assistant = await openai.beta.assistants.create({
-    instructions:
-      'You are an authors assistant. You have access to the authors books in your files.',
-    name: 'Author Assistant',
-    model: 'gpt-4-turbo',
-    tools: [{ type: 'file_search' }]
+    instructions,
+    name: 'Podcast Assistant',
+    model: 'gpt-4o',
+    tools: [...functions, { type: 'file_search' }, { type: 'code_interpreter' }]
   })
   console.log('Created assistant:', assistant)
   const vectorStore = await createVectorStore()
@@ -66,9 +69,37 @@ export const createAssistant = async () => {
   return { assistant, vectorStore }
 }
 
-const createVectorStore = async () => {
+export const updateAssistant = async (assistantId: string) => {
+  let instructions = getInstructions()
+  console.log('Updating assistant with instructions:', instructions)
+  await openai.beta.assistants.update(assistantId, {
+    name: 'Podcast Assistant',
+    instructions,
+    model: 'gpt-4o',
+    tools: [...functions, { type: 'file_search' }, { type: 'code_interpreter' }]
+  })
+  let vectorStoreId = await getVectorStoreId(assistantId)
+  if (!vectorStoreId) {
+    vectorStoreId = (await createVectorStore()).id
+    await openai.beta.assistants.update(assistantId, {
+      tool_resources: { file_search: { vector_store_ids: [vectorStoreId] } }
+    })
+    console.log('Updated assistant with new vector store:', vectorStoreId)
+  }
+  return vectorStoreId
+}
+
+function getInstructions() {
+  let instructions = `You are an AI agent that helps people find podcast episodes to listen to.
+  In your files you have access to transcripts of podcast episodes.
+  You may be asked to answer questions about the episodes or provide summaries.
+  You also have access to functions that can help you.`
+  return instructions
+}
+
+export const createVectorStore = async () => {
   return await openai.beta.vectorStores.create({
-    name: 'Books'
+    name: 'Podcast Transcripts'
   })
 }
 

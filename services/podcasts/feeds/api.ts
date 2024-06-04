@@ -2,6 +2,7 @@ import { publish } from '../../core/messages'
 import { getUserId } from '../../core/auth'
 
 import { getFeed, getFeeds, createFeed, updateFeed, deleteFeed } from './db'
+import { getEpisodes } from '../episodes/db'
 
 export async function list(event: any) {
   const userId = getUserId(event)
@@ -53,6 +54,14 @@ export async function update(event: any) {
   await publish('services.podcasts', 'feed.updated', {
     feed: updatedFeed
   })
+
+  const episodes = await getEpisodes(userId, id)
+
+  for (const episode of episodes) {
+    await publish('services.podcasts', 'episode.transcribed', {
+      episode
+    })
+  }
 
   return {
     statusCode: 200,

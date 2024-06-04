@@ -61,7 +61,7 @@ export const createFeed = async (userId: string, feed: any) => {
 
 export const updateFeed = async (userId: string, id: string, feed: any) => {
   const record: any = {
-    Id: id,
+    CreatedAt: new Date().toISOString(),
     UpdatedAt: new Date().toISOString(),
     FeedName: feed.feed_name
   }
@@ -97,7 +97,7 @@ export const updateFeed = async (userId: string, id: string, feed: any) => {
       }
     })
   )
-  return transformFromDb(record)
+  return transformFromDb({ ...record, Id: id, UserId: userId })
 }
 
 export const deleteFeed = async (userId: string, id: string) => {

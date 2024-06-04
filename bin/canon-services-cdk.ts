@@ -32,7 +32,8 @@ new FilesStack(app, `${environment}-FilesStack`, {
 })
 new AssistantStack(app, `${environment}-AssistantStack`, {
   ...defaultProps,
-  domainName: 'assistant.api.' + domainRoot
+  domainName: 'assistant.api.' + domainRoot,
+  podcastApiUrl: 'https://podcasts.api.' + domainRoot
 })
 new AdminStack(app, `${environment}-AdminStack`, {
   ...defaultProps,

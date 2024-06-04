@@ -100,6 +100,7 @@ export class PodcastsStack extends cdk.Stack {
     // Give the CRUD functions access to the bucket and table
     functions.forEach((fn) => {
       feedsTable.grantReadWriteData(fn)
+      episodesTable.grantReadWriteData(fn)
     })
 
     // Create CRUD routes

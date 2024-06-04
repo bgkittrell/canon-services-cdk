@@ -42,13 +42,19 @@ export const createAssistant = async (userId: string, openAiAssistantId: string)
   return transformFromDb(record)
 }
 
-export const createChatSession = async (userId: string, assistantId: string, threadId: string) => {
+export const createChatSession = async (
+  userId: string,
+  assistantId: string,
+  threadId: string,
+  jwtToken: string
+) => {
   const id = uuidv4()
   const record: any = {
     Id: id,
     UserId: userId,
     AssistantId: assistantId,
     ThreadId: threadId,
+    JwtToken: jwtToken,
     CreatedAt: new Date().toISOString()
   }
   await dynamo.send(
@@ -76,7 +82,8 @@ export const getChatSession = async (id: string) => {
     id: item.Item.Id,
     user_id: item.Item.UserId,
     assistant_id: item.Item.AssistantId,
-    thread_id: item.Item.ThreadId
+    thread_id: item.Item.ThreadId,
+    jwt_token: item.Item.JwtToken
   }
 }
 

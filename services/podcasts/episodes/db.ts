@@ -37,9 +37,12 @@ export const getEpisodes = async (userId: string, feedId: string) => {
     })
   )
   console.log('Item count:', records.Items?.length)
-  console.log('Response:', records)
-  const filtered = records.Items?.filter((i: any) => i.UserId === userId)
-  return filtered?.map(transformFromDb)
+  if (!records.Items) return []
+  let filtered = records.Items.filter((i: any) => i.UserId === userId)
+  filtered = filtered.sort(
+    (a: any, b: any) => new Date(a.PublishedAt).getTime() - new Date(b.PublishedAt).getTime()
+  )
+  return filtered.map(transformFromDb)
 }
 
 export const createEpisode = async (userId: string, feedId: string, episode: any) => {
@@ -132,7 +135,8 @@ function transformFromDb(episode: any) {
     description: episode.Description,
     published_at: episode.PublishedAt,
     duration: episode.Duration,
-    transcribed: !!episode.TranscriptUrl
+    transcribed: !!episode.TranscriptUrl,
+    transcript_url: episode.TranscriptUrl
   }
 }
 

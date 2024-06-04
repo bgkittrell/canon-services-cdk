@@ -4,7 +4,9 @@ import {
   getVectorStoreId,
   createFile,
   deleteVectorStoreFile,
-  deleteFile
+  deleteFile,
+  updateAssistant,
+  createVectorStore
 } from './assistant.js'
 
 import { getAssistantByUserId, createAssistant as saveAssistant } from './db.js'
@@ -12,6 +14,7 @@ import { acquireLock, releaseLock } from './lock.js'
 import { publish } from '../core/messages'
 
 import { EventBridgeEvent } from 'aws-lambda/trigger/eventbridge'
+import { getEpisode, getEpisodes } from '../podcasts/episodes/db.js'
 
 export const handler = async (event: EventBridgeEvent<any, any>) => {
   console.log('Event:', event)
@@ -109,7 +112,7 @@ async function upsertAssistant(userId: string) {
     vectorStoreId = vectorStore.id
     assistantId = assistant.id
   } else {
-    vectorStoreId = await getVectorStoreId(assistantId)
+    vectorStoreId = await updateAssistant(assistantId)
   }
   return { assistantId, vectorStoreId }
 }

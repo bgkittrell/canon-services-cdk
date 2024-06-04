@@ -16,6 +16,7 @@ import { createApi, createQueueConsumer } from '../core/_infra'
 interface AssistantProps extends cdk.StackProps {
   eventBusName: string
   domainName: string
+  podcastApiUrl: string
   zoneName: string
   jwtIssuer: string
   jwtAudience: string
@@ -51,6 +52,7 @@ export class AssistantStack extends cdk.Stack {
         LOCKS_TABLE: locksTable.tableName,
         ASSISTANTS_TABLE: assistantsTable.tableName,
         CHAT_SESSIONS_TABLE: chatSessionsTable.tableName,
+        PODCAST_API_URL: props.podcastApiUrl,
         OPENAI_API_KEY: openaiApiKey
       }
     }
@@ -58,7 +60,8 @@ export class AssistantStack extends cdk.Stack {
     const streamFunction = new NodejsFunction(this, 'StreamFunction', {
       ...lambdaDefaults,
       timeout: cdk.Duration.seconds(120),
-      entry: join(__dirname, 'stream.js'),
+      memorySize: 1024,
+      entry: join(__dirname, 'chat', 'stream.ts'),
       handler: 'handler'
     })
     const streamFunctionUrl = new lambda.FunctionUrl(this, 'StreamFunctionUrl', {
@@ -87,7 +90,7 @@ export class AssistantStack extends cdk.Stack {
         OPENAI_API_KEY: openaiApiKey,
         STREAM_URL: streamFunctionUrl.url
       },
-      entry: join(__dirname, 'api.ts'),
+      entry: join(__dirname, 'chat', 'api.ts'),
       handler: 'createSession'
     })
 
@@ -128,7 +131,7 @@ export class AssistantStack extends cdk.Stack {
       eventBus,
       {
         'services.files': ['file.created', 'file.updated', 'file.deleted'],
-        'services.podcasts': ['episode.transcribed']
+        'services.podcasts': ['episode.transcribed', 'feed.updated']
       }
     )
 

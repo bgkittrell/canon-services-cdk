@@ -1,5 +1,5 @@
 import axios from 'axios'
-import * as pt from 'podcast-partytime'
+import { parseFeed } from 'podcast-partytime'
 import { publish } from '../../core/messages'
 import { createEpisode } from './db'
 import { EventBridgeEvent } from 'aws-lambda/trigger/eventbridge'
@@ -34,7 +34,7 @@ async function createEpisodes(feed: any) {
   const feedXml = await axios.get(feed.url)
   console.log('Feed:', feedXml.data)
 
-  const episodes = pt.parseFeed(feedXml.data)
+  const episodes = parseFeed(feedXml.data)
   console.log('Episodes:', episodes)
   if (!episodes) {
     throw new Error('No episodes found')

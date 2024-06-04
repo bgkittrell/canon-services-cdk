@@ -1,13 +1,16 @@
 import OpenAI from 'openai'
 const openai = new OpenAI()
-import { getUserId } from '../core/auth'
+import { getUserId, getJwtToken } from '../../core/auth'
+import { APIGatewayEvent } from 'aws-lambda'
 
-import { getAssistantByUserId, createChatSession } from './db'
+import { getAssistantByUserId, createChatSession } from '../db'
 
-export async function createSession(event: any) {
+export async function createSession(event: APIGatewayEvent) {
   console.log('Event:', event)
   const userId = getUserId(event)
   console.log('User ID:', userId)
+  const jwtToken = getJwtToken(event)
+  console.log('JWT Token:', jwtToken)
   const assistant = await getAssistantByUserId(userId)
 
   const response = await openai.beta.threads.create()
@@ -15,7 +18,12 @@ export async function createSession(event: any) {
 
   const threadId = response.id
 
-  const sessionId = await createChatSession(userId, assistant?.openai_assistant_id, threadId)
+  const sessionId = await createChatSession(
+    userId,
+    assistant?.openai_assistant_id,
+    threadId,
+    jwtToken
+  )
   console.log('Session:', sessionId)
 
   // Because the lambda function is of type RESPONSE_STREAM, we can't proxy it through API Gateway and we can't use a custom domain.
